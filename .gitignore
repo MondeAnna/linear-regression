@@ -1,0 +1,8 @@
+*.egg-info
+*.pyc
+*.swp
+*/.ipynb_checkpoints/
+*/.pytest_cache/
+*/__pycache__/
+*/dist/
+.ipynb_checkpoints/
