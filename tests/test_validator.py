@@ -11,6 +11,8 @@ import pytest
     [
         (ErrorCalculator, [0], np.array([1]), "^.* numpy array .* parameter y$"),
         (ErrorCalculator, np.array([2]), [3], "^.* numpy array .* parameter y_hat$"),
+        (Plotter, [100], np.array([101]), "^.* numpy array .* parameter y$"),
+        (Plotter, np.array([102]), [103], "^.* numpy array .* parameter y_hat$"),
     ],
 )
 def test_that_error_is_raised_if_parameters_are_not_np_ndarrays(Constructor, y, y_hat, match):
@@ -23,6 +25,8 @@ def test_that_error_is_raised_if_parameters_are_not_np_ndarrays(Constructor, y, 
     [
         (ErrorCalculator, np.array([[4], [5]]), np.array([6]), "^.* 1 dimension .* parameter y$"),
         (ErrorCalculator, np.array([7]), np.array([[8], [9]]), "^.* 1 dimension .* parameter y_hat$"),
+        (Plotter, np.array([[104], [5]]), np.array([106]), "^.* 1 dimension .* parameter y$"),
+        (Plotter, np.array([107]), np.array([[108], [109]]), "^.* 1 dimension .* parameter y_hat$"),
     ],
 )
 def test_that_error_is_raised_if_parameters_are_not_one_dimensional(Constructor, y, y_hat, match):
@@ -35,6 +39,8 @@ def test_that_error_is_raised_if_parameters_are_not_one_dimensional(Constructor,
     [
         (ErrorCalculator, np.array([]), np.array([]), "^.* more than 2 values .* parameter y & y_hat$"),
         (ErrorCalculator, np.array([1]), np.array([1]), "^.* more than 2 values .* parameter y & y_hat$"),
+        (Plotter, np.array([]), np.array([]), "^.* more than 2 values .* parameter y & y_hat$"),
+        (Plotter, np.array([1001]), np.array([1001]), "^.* more than 2 values .* parameter y & y_hat$"),
     ],
 )
 def test_that_error_is_raised_if_parameters_are_empty(Constructor, y, y_hat, match):
@@ -55,6 +61,18 @@ def test_that_error_is_raised_if_parameters_are_empty(Constructor, y, y_hat, mat
             ErrorCalculator,
             np.array([13]),
             np.array([14, 15]),
+            "^.* equal observations .* parameter y & y_hat$",
+        ),
+        (
+            Plotter,
+            np.array([110, 111]),
+            np.array([112]),
+            "^.* equal observations .* parameter y & y_hat$",
+        ),
+        (
+            Plotter,
+            np.array([113]),
+            np.array([114, 115]),
             "^.* equal observations .* parameter y & y_hat$",
         ),
     ],
