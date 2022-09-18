@@ -1,4 +1,4 @@
-from utilities.inference_calculator import InferenceCalculator
+from utilities.influence_calculator import InfluenceCalculator
 from utilities.error_calculator import ErrorCalculator
 from utilities.plotter import Plotter
 import statsmodels.api as sm
@@ -103,4 +103,4 @@ def test_that_fitted_least_squares_models_work(algorithm):
 )
 def test_that_constructor_is_passed_a_fitted_model(arg):
     with pytest.raises(TypeError, match="^.* fitted model .* 'statsmodels'$"):
-        InferenceCalculator(arg)
+        InfluenceCalculator(arg)
