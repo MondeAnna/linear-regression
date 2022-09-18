@@ -1,4 +1,4 @@
-from utilities.error_calculator import ErrorCalculator as Calc
+from utilities.error_calculator import ErrorCalculator
 from collections import OrderedDict
 import numpy as np
 import pytest
@@ -14,7 +14,7 @@ import json
     ],
 )
 def test_for_residuals(y, y_hat, expected):
-    calc = Calc(y, y_hat)
+    calc = ErrorCalculator(y, y_hat)
     residuals = calc.get_residuals()
     assert all(expected == residuals)
 
@@ -36,7 +36,7 @@ def test_for_residuals(y, y_hat, expected):
     ],
 )
 def test_for_standardised_residuals(y, y_hat, expected):
-    calc = Calc(y, y_hat)
+    calc = ErrorCalculator(y, y_hat)
     standardised_residuals = calc.get_standardised_residuals()
     rounded_standardised_residuals = standardised_residuals.round(decimals=5)
     assert all(expected == rounded_standardised_residuals)
@@ -51,7 +51,7 @@ def test_for_standardised_residuals(y, y_hat, expected):
     ],
 )
 def test_for_standard_residual_deviation(y, y_hat, expected):
-    calc = Calc(y, y_hat)
+    calc = ErrorCalculator(y, y_hat)
     standardised_residual_deviation = calc._get_standard_residual_deviation()
     assert expected == standardised_residual_deviation
 
@@ -65,7 +65,7 @@ def test_for_standard_residual_deviation(y, y_hat, expected):
     ],
 )
 def test_for_mean_sqaure_error(y, y_hat, expected):
-    calc = Calc(y, y_hat)
+    calc = ErrorCalculator(y, y_hat)
     mse = calc.get_mse()
     assert expected == mse
 
@@ -84,7 +84,7 @@ def test_for_mean_sqaure_error(y, y_hat, expected):
     ],
 )
 def test_for_root_mean_sqaure_error(y, y_hat, expected):
-    calc = Calc(y, y_hat)
+    calc = ErrorCalculator(y, y_hat)
     rmse = calc.get_rmse()
     assert np.round(expected, decimals=5) == np.round(rmse, decimals=5)
 
@@ -104,64 +104,9 @@ def test_error_summary(capsys):
     y = np.array([1, 2, 3, 4])
     y_hat = np.array([-1, 2, 3, 4])
 
-    calc = Calc(y, y_hat)
+    calc = ErrorCalculator(y, y_hat)
     calc.error_summary()
 
     stdout, _ = capsys.readouterr()
     assert expected == stdout
 
-
-@pytest.mark.parametrize(
-    ["y", "y_hat", "match"],
-    [
-        ([0], np.array([1]), "^.* numpy array .* parameter y$"),
-        (np.array([2]), [3], "^.* numpy array .* parameter y_hat$"),
-    ],
-)
-def test_that_error_is_raised_if_parameters_are_not_np_ndarrays(y, y_hat, match):
-    with pytest.raises(TypeError, match=match):
-        Calc(y, y_hat)
-
-
-@pytest.mark.parametrize(
-    ["y", "y_hat", "match"],
-    [
-        (np.array([[4], [5]]), np.array([6]), "^.* 1 dimension .* parameter y$"),
-        (np.array([7]), np.array([[8], [9]]), "^.* 1 dimension .* parameter y_hat$"),
-    ],
-)
-def test_that_error_is_raised_if_parameters_are_not_one_dimensional(y, y_hat, match):
-    with pytest.raises(TypeError, match=match):
-        Calc(y, y_hat)
-
-
-@pytest.mark.parametrize(
-    ["y", "y_hat", "match"],
-    [
-        (np.array([]), np.array([]), "^.* more than 2 values .* parameter y$"),
-        (np.array([1]), np.array([1]), "^.* more than 2 values .* parameter y$"),
-    ],
-)
-def test_that_error_is_raised_if_parameters_are_empty(y, y_hat, match):
-    with pytest.raises(TypeError, match=match):
-        Calc(y, y_hat)
-
-
-@pytest.mark.parametrize(
-    ["y", "y_hat", "match"],
-    [
-        (
-            np.array([10, 11]),
-            np.array([12]),
-            "^.* equal observations .* parameter y & y_hat$",
-        ),
-        (
-            np.array([13]),
-            np.array([14, 15]),
-            "^.* equal observations .* parameter y & y_hat$",
-        ),
-    ],
-)
-def test_that_error_is_raised_when_parameter_sizes_are_not_equal(y, y_hat, match):
-    with pytest.raises(TypeError, match=match):
-        Calc(y, y_hat)

@@ -6,9 +6,9 @@ import json
 
 class ErrorCalculator:
     def __init__(self, y, y_hat):
+        check_for_array_validity(y, y_hat)
         self.y = y
         self.y_hat = y_hat
-        self._check_parameters()
 
     def get_residuals(self):
         return self.y - self.y_hat
@@ -50,40 +50,3 @@ class ErrorCalculator:
     def _get_squared_residuals(self):
         return self.get_residuals() ** 2
 
-    def _check_parameters(self):
-        self._check_types(self.y, "y")
-        self._check_types(self.y_hat, "y_hat")
-        self._check_dimensions(self.y, "y")
-        self._check_dimensions(self.y_hat, "y_hat")
-        self._check_for_equal_observation_count()
-        self._check_for_more_than_two_entries(self.y, "y")
-        self._check_for_more_than_two_entries(self.y_hat, "y_hat")
-
-    def _check_types(self, parameter, name):
-        if type(parameter) != np.ndarray:
-            expected_type = "numpy array"
-            message = self._parameter_type_error_message(expected_type, name)
-            raise TypeError(message)
-
-    def _check_dimensions(self, parameter, name):
-        if parameter.ndim != 1:
-            dimensions = "1 dimension"
-            message = self._parameter_type_error_message(dimensions, name)
-            raise TypeError(message)
-
-    def _check_for_equal_observation_count(self):
-        if self.y.size != self.y_hat.size:
-            observations = "equal observations"
-            variables = "y & y_hat"
-            message = self._parameter_type_error_message(observations, variables)
-            raise TypeError(message)
-
-    def _check_for_more_than_two_entries(self, parameter, name):
-        if parameter.size < 2:
-            expectation = "more than 2 values"
-            message = self._parameter_type_error_message(expectation, name)
-            raise TypeError(message)
-
-    @staticmethod
-    def _parameter_type_error_message(expected, parameter):
-        return f"expected a {expected} for the parameter {parameter}"
